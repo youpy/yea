@@ -1,29 +1,35 @@
-<body>
-  <script type="module">
-    import { amen, randomSequence } from "./main.js";
-    import { render } from "https://esm.sh/preact";
-    import { useState } from "https://esm.sh/preact/hooks";
-    import { html } from "https://esm.sh/htm/preact";
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <script type="module">
+      // https://github.com/youpy/yea
+      import { amen, randomSequence } from "./main.js";
+      import { render } from "https://esm.sh/preact";
+      import { useState } from "https://esm.sh/preact/hooks";
+      import { html } from "https://esm.sh/htm/preact";
 
-    const App = () => {
-      const [stop, setStop] = useState(null);
-      const toggle = () => {
-        if (stop) {
-          stop.fn();
+      const App = () => {
+        const [stop, setStop] = useState(null);
+        const toggle = () => {
+          if (stop) {
+            stop.fn();
 
-          setStop(null);
-        } else {
-          const [stop] = amen(randomSequence());
+            setStop(null);
+          } else {
+            const [stop] = amen(randomSequence());
 
-          setStop({ fn: stop });
-        }
+            setStop({ fn: stop });
+          }
+        };
+
+        return html`
+          <button onClick=${() => toggle()}>${stop ? "stop" : "start"}</button>
+        `;
       };
 
-      return html`<button onClick=${() => toggle()}>
-        ${stop ? "stop" : "start"}
-      </button>`;
-    };
-
-    render(html`<${App} />`, document.body);
-  </script>
-</body>
+      render(html`<${App} />`, document.body);
+    </script>
+  </body>
+</html>
