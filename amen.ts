@@ -93,7 +93,6 @@ export const amen = (
     const schedule = () => {
       console.log(ac.currentTime)
 
-      let index = 0
       let duration = 0
 
       for (let i = 0; i < sequence.length; i++) {
@@ -150,7 +149,6 @@ export const amen = (
           )
         }
 
-        index++
         duration += stepDuration
       }
 
