@@ -51,6 +51,8 @@ export const amen = (
           }
         }
 
+        console.log(stepLength)
+
         if (stepLength > 0) {
           source.buffer = audioBuffer
           source.loop = true
@@ -113,25 +115,42 @@ export const exampleFn = (): Sequence => {
   return (index: number) => {
     return {
       sliceIndex: index,
-      length: seq([0.0, 1, 0.5, 1]),
+      length: {
+        type: 'pick',
+        value: [0.0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      },
       loop: {
-        length: seq([1, 1 / 2, 1 / 3, 1 / 4]),
+        length: { type: 'pick', value: [1, 1 / 2, 1 / 4] },
         prob: 1,
       },
       swap: {
-        index: pick([
-          Math.floor(Math.random() * numSlices),
-          Math.abs(
-            index + Math.floor(Math.random() * numSlices * 2) - numSlices,
-          ),
-        ]),
+        index: {
+          type: 'pick',
+          value: [
+            Math.floor(Math.random() * numSlices),
+            Math.max(index - 4, 0),
+            Math.max(index - 6, 0),
+            Math.max(index - 2, 0),
+            Math.max(index - 1, 0),
+            Math.min(index + 4, numSlices - 1),
+            Math.min(index + 6, numSlices - 1),
+            Math.min(index + 2, numSlices - 1),
+            Math.min(index + 1, numSlices - 1),
+          ],
+        },
         prob: 0.4,
       },
       hop: {
-        index: Math.abs(
-          index + Math.floor(Math.random() * numSlices * 2) - numSlices,
-        ),
-        prob: 0.3,
+        index: {
+          type: 'pick',
+          value: [
+            Math.max(index - 6, 0),
+            Math.max(index - 4, 0),
+            Math.max(index - 2, 0),
+            Math.max(index - 1, 0),
+          ],
+        },
+        prob: 0.75,
       },
     }
   }
