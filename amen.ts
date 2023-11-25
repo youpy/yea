@@ -1,4 +1,4 @@
-import { pick, seq, value } from './value.ts'
+import { value } from './value.ts'
 import { Sequence, stepIndex } from './sequence.ts'
 
 import asset from './asset.ts'
@@ -109,49 +109,4 @@ export const amen = (
   }, (newSequence: Sequence) => {
     sequence = newSequence
   }]
-}
-
-export const exampleFn = (): Sequence => {
-  return (index: number) => {
-    return {
-      sliceIndex: index,
-      length: {
-        type: 'pick',
-        value: [0.0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      },
-      loop: {
-        length: { type: 'pick', value: [1, 1 / 2, 1 / 4] },
-        prob: 1,
-      },
-      swap: {
-        index: {
-          type: 'pick',
-          value: [
-            Math.floor(Math.random() * numSlices),
-            Math.max(index - 4, 0),
-            Math.max(index - 6, 0),
-            Math.max(index - 2, 0),
-            Math.max(index - 1, 0),
-            Math.min(index + 4, numSlices - 1),
-            Math.min(index + 6, numSlices - 1),
-            Math.min(index + 2, numSlices - 1),
-            Math.min(index + 1, numSlices - 1),
-          ],
-        },
-        prob: 0.4,
-      },
-      hop: {
-        index: {
-          type: 'pick',
-          value: [
-            Math.max(index - 6, 0),
-            Math.max(index - 4, 0),
-            Math.max(index - 2, 0),
-            Math.max(index - 1, 0),
-          ],
-        },
-        prob: 0.75,
-      },
-    }
-  }
 }
