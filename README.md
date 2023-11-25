@@ -5,8 +5,12 @@
 
 ## usage
 
-```typescript
-import { amen, pick, seq } from 'https://deno.land/x/yea@v0.1.1/mod.ts'
+```javascript
+import {
+  amen,
+  pick,
+  seq,
+} from 'https://deno-emit-proxy.deno.dev/x/yea@v0.2.0/mod.ts'
 
 amen((index) => {
   return {
