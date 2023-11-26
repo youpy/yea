@@ -1,4 +1,4 @@
-import { Value, value } from './value.ts'
+import { pick, seq, Value, value } from './value.ts'
 
 export type Sequence = Step[] | ((index: number) => Step)
 
@@ -32,4 +32,16 @@ export const stepIndex = (index: number, step: Step): number => {
   }
 
   return index
+}
+
+export const example: Sequence = (index: number) => {
+  return {
+    sliceIndex: index,
+    length: pick([0.0, 1, 0.5, 1]),
+    duration: seq([0.5, 1, 2, 3, 4, 5, 6]),
+    loop: {
+      length: seq([1, 1 / 2, 1 / 3, 1 / 4, 1 / 5]),
+      prob: 1,
+    },
+  }
 }

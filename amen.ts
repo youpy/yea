@@ -51,8 +51,6 @@ export const amen = (
           }
         }
 
-        console.log(stepLength)
-
         if (stepLength > 0) {
           source.buffer = audioBuffer
           source.loop = true
