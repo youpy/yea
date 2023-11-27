@@ -3,10 +3,9 @@ import { Sequence, stepIndex } from './sequence.ts'
 
 import asset from './asset.ts'
 
-const numSlices = 16
-
 export const amen = (
   sequence: Sequence,
+  numSlices = 16,
 ): [() => void, (newSequence: Sequence) => void] => {
   const content = new Uint8Array(asset.files.amen.content)
   const ac = new AudioContext()
