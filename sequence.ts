@@ -1,8 +1,9 @@
 import { Value, value } from './value.ts'
 
+export type SequenceFn = (index: number, cumulativeIndex: number) => Step
 export type Sequence =
   | Step[]
-  | ((index: number, cumulativeIndex: number) => Step)
+  | SequenceFn
 
 interface Step {
   sliceIndex: Value
@@ -36,7 +37,10 @@ export const stepIndex = (index: number, step: Step): number => {
   return index
 }
 
-export const example: Sequence = (_index: number, cumulativeIndex: number) => {
+export const example: SequenceFn = (
+  _index: number,
+  cumulativeIndex: number,
+) => {
   const sliceIndex = Math.floor(
     (Math.sin(Math.sin(cumulativeIndex / 0.098)) * 0.5 +
       0.5) * 16,

@@ -16,7 +16,7 @@ export const amen = (
   let cumulativeIndex = 0
 
   gain.connect(ac.destination)
-  ac.decodeAudioData(content.buffer, function (audioBuffer) {
+  ac.decodeAudioData(content.buffer, (audioBuffer) => {
     const sliceDuration = audioBuffer.duration / numSlices
     const schedule = () => {
       if (currentTime <= ac.currentTime + 0.2) {
@@ -25,7 +25,8 @@ export const amen = (
         let duration = 0
         const n = typeof sequence === 'function' ? numSlices : sequence.length
 
-        for (let i = 0; i < n; i++) {
+        for (let x = 0; x < 3; x++) {
+          let i = cumulativeIndex % n
           const si = typeof sequence === 'function'
             ? stepIndex(i, sequence(i, cumulativeIndex))
             : stepIndex(i, sequence[i]) % sequence.length
