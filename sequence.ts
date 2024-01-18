@@ -1,6 +1,8 @@
-import { pick, seq, Value, value } from './value.ts'
+import { Value, value } from './value.ts'
 
-export type Sequence = Step[] | ((index: number) => Step)
+export type Sequence =
+  | Step[]
+  | ((index: number, cumulativeIndex: number) => Step)
 
 interface Step {
   sliceIndex: Value
@@ -34,14 +36,18 @@ export const stepIndex = (index: number, step: Step): number => {
   return index
 }
 
-export const example: Sequence = (index: number) => {
+export const example: Sequence = (_index: number, cumulativeIndex: number) => {
+  const sliceIndex = Math.floor(
+    (Math.sin(Math.sin(cumulativeIndex / 0.098)) * 0.5 +
+      0.5) * 16,
+  )
+
   return {
-    sliceIndex: index,
-    length: pick([0.0, 1, 0.5, 1]),
-    duration: seq([0.5, 1, 2, 3, 4, 5, 6]),
+    sliceIndex,
+    length: sliceIndex % 4 === 1 ? 0.001 : 1,
     loop: {
-      length: seq([1, 1 / 2, 1 / 3, 1 / 4, 1 / 5]),
       prob: 1,
+      length: 1 / ((sliceIndex % 3) + 1),
     },
   }
 }
