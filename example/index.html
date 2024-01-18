@@ -15,63 +15,112 @@
   <body>
     <script type="text/babel">
       // https://github.com/youpy/yea
-      import {
-        amen,
-        pick,
-      } from "https://deno-emit-proxy.deno.dev/x/yea@v0.2.0/mod.ts";
+      import { amen } from "https://deno-emit-proxy.deno.dev/x/yea@v0.3.0/mod.ts";
       import { render } from "preact";
-      import { useState } from "preact/hooks";
+      import { useState, useEffect } from "preact/hooks";
+
+      const createFn = (value) => {
+        return (_index, cumulativeIndex) => {
+          const sliceIndex = Math.floor(
+            (Math.sin(Math.sin(cumulativeIndex / value)) * 0.5 + 0.5) * 16
+          );
+
+          return {
+            sliceIndex,
+            length: sliceIndex % 4 === 1 ? 0.001 : 1,
+            loop: {
+              prob: 1,
+              length: 1 / ((sliceIndex % 3) + 1),
+            },
+          };
+        };
+      };
+
+      const getValueFromHash = () => {
+        const h = window.location.hash;
+
+        if (h.length > 1) {
+          return h.substring(1) * 1;
+        }
+      };
+
+      const setValueToHash = (value) => {
+        window.location.hash = `#${value}`;
+      };
 
       const App = () => {
         const [stop, setStop] = useState(null);
+        const [setFn, setSetFn] = useState(null);
+        const [value, setValue] = useState(getValueFromHash() || 98);
+
+        useEffect(() => {
+          const fn = (e) => {
+            let newValue = value;
+
+            if (e.code == `ArrowUp`) {
+              newValue = Math.min(1000, value + 1);
+            } else if (e.code == `ArrowDown`) {
+              newValue = Math.max(1, value - 1);
+            }
+
+            setValue(newValue);
+            setValueToHash(newValue);
+
+            if (setFn) {
+              setFn.fn(createFn(newValue / 1000));
+            }
+          };
+
+          window.addEventListener("keydown", fn);
+
+          return () => {
+            window.removeEventListener("keydown", fn);
+          };
+        });
+
         const toggle = () => {
           if (stop) {
             stop.fn();
 
             setStop(null);
+            setSetFn(null);
           } else {
-            const [stop] = amen((index) => {
-              const numSlices = 16;
-
-              return {
-                sliceIndex: index,
-                length: pick([0.0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]),
-                loop: {
-                  length: pick([1, 1 / 2, 1 / 4]),
-                  prob: 1,
-                },
-                swap: {
-                  index: pick([
-                    Math.floor(Math.random() * numSlices),
-                    Math.max(index - 4, 0),
-                    Math.max(index - 6, 0),
-                    Math.max(index - 2, 0),
-                    Math.max(index - 1, 0),
-                    Math.min(index + 4, numSlices - 1),
-                    Math.min(index + 6, numSlices - 1),
-                    Math.min(index + 2, numSlices - 1),
-                    Math.min(index + 1, numSlices - 1),
-                  ]),
-                  prob: 0.4,
-                },
-                hop: {
-                  index: pick([
-                    Math.max(index - 6, 0),
-                    Math.max(index - 4, 0),
-                    Math.max(index - 2, 0),
-                    Math.max(index - 1, 0),
-                  ]),
-                  prob: 0.75,
-                },
-              };
-            });
+            const [stop, setFn] = amen(createFn(value / 1000));
 
             setStop({ fn: stop });
+            setSetFn({ fn: setFn });
+          }
+        };
+        const change = (e) => {
+          const v = e.target.value * 1;
+
+          setValue(v);
+          setValueToHash(v);
+
+          if (setFn) {
+            setFn.fn(createFn(v / 1000));
           }
         };
 
         return (
-          <button onClick={() => toggle()}>{stop ? "stop" : "start"}</button>
+          <>
+            <p>
+              <button onClick={() => toggle()}>
+                {stop ? "stop" : "start"}
+              </button>
+            </p>
+            <p>
+              <input
+                type="range"
+                min="1"
+                max="1000"
+                value={value}
+                step="1"
+                onInput={change}
+              />
+              {value}
+            </p>
+          </>
         );
       };
 
