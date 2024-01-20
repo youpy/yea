@@ -95,7 +95,7 @@ export const amen = (
 
       timeoutId = setTimeout(
         schedule,
-        200,
+        100,
       )
     }
 
