@@ -20,18 +20,20 @@
       import { useState, useEffect } from "preact/hooks";
 
       const createFn = (value) => {
-        return (_index, cumulativeIndex) => {
+        return (index, cumulativeIndex) => {
           const sliceIndex = Math.floor(
-            (Math.sin(Math.sin(cumulativeIndex / value)) * 0.5 + 0.5) * 16
+            (Math.sin(cumulativeIndex / value) * 0.5 + 0.5) * 16
           );
+          const duration = ((cumulativeIndex * sliceIndex) % 3) + 1;
 
           return {
             sliceIndex,
-            // length: sliceIndex % 4 === 1 ? 0.001 : 1,
-            // loop: {
-            //   prob: 1,
-            //   length: 1 / ((sliceIndex % 3) + 1),
-            // },
+            duration,
+            length: 1 / duration,
+            loop: {
+              prob: 1,
+              length: 1 / (((cumulativeIndex * index) % 4) + 1),
+            },
           };
         };
       };
@@ -51,10 +53,12 @@
       const App = () => {
         const [stop, setStop] = useState(null);
         const [setFn, setSetFn] = useState(null);
-        const [value, setValue] = useState(getValueFromHash() || 98);
+        const [value, setValue] = useState(
+          getValueFromHash() || Math.floor(Math.random() * 1000) + 1
+        );
 
         useEffect(() => {
-          const fn = (e) => {
+          const onKeyDown = (e) => {
             let newValue = value;
 
             if (e.code == `ArrowUp`) {
@@ -67,18 +71,22 @@
               newValue = Math.max(1, value - 20);
             }
 
-            setValue(newValue);
             setValueToHash(newValue);
 
             if (setFn) {
               setFn.fn(createFn(newValue / 1000));
             }
           };
+          const onHashChange = () => {
+            setValue(getValueFromHash());
+          };
 
-          window.addEventListener("keydown", fn);
+          window.addEventListener("keydown", onKeyDown);
+          window.addEventListener("hashchange", onHashChange);
 
           return () => {
-            window.removeEventListener("keydown", fn);
+            window.removeEventListener("keydown", onKeyDown);
+            window.removeEventListener("hashchange", onHashChange);
           };
         });
 
@@ -98,7 +106,6 @@
         const change = (e) => {
           const v = e.target.value * 1;
 
-          setValue(v);
           setValueToHash(v);
 
           if (setFn) {
@@ -122,11 +129,14 @@
                 step="1"
                 onInput={change}
               />
-              {value}
             </p>
           </>
         );
       };
+
+      if (!getValueFromHash()) {
+        setValueToHash(Math.floor(Math.random() * 1000) + 1);
+      }
 
       render(<App />, document.body);
     </script>
