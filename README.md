@@ -14,7 +14,7 @@
       document.querySelector("button").addEventListener("click", () =>
         amen((index, cumulativeIndex) => {
           const sliceIndex = Math.floor(
-            (Math.sin(cumulativeIndex / value) * 0.5 + 0.5) * 16
+            (Math.sin(cumulativeIndex / 0.485) * 0.5 + 0.5) * 16
           );
           const duration = ((cumulativeIndex * sliceIndex) % 3) + 1;
 
