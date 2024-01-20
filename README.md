@@ -9,31 +9,22 @@
 <html>
   <body>
     <script type="module">
-      import {
-        amen,
-        pick,
-        seq,
-      } from "https://deno-emit-proxy.deno.dev/x/yea@v0.2.0/mod.ts";
+      import { amen } from "https://deno-emit-proxy.deno.dev/x/yea@v0.4.0/mod.ts";
 
       document.querySelector("button").addEventListener("click", () =>
-        amen((index) => {
+        amen((index, cumulativeIndex) => {
+          const sliceIndex = Math.floor(
+            (Math.sin(cumulativeIndex / value) * 0.5 + 0.5) * 16
+          );
+          const duration = ((cumulativeIndex * sliceIndex) % 3) + 1;
+
           return {
-            sliceIndex: index,
-            length: seq([0.0, 1, 0.5, 1]),
+            sliceIndex,
+            duration,
+            length: 1 / duration,
             loop: {
-              length: seq([1, 1 / 2, 1 / 3, 1 / 4]),
               prob: 1,
-            },
-            swap: {
-              index: pick([
-                Math.floor(Math.random() * 16),
-                Math.abs(index + (Math.floor(Math.random() * 32) - 16)),
-              ]),
-              prob: 0.4,
-            },
-            hop: {
-              index: Math.abs(index + (Math.floor(Math.random() * 32) - 16)),
-              prob: 0.3,
+              length: 1 / (((cumulativeIndex * index) % 4) + 1),
             },
           };
         })
