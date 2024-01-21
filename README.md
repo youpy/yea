@@ -9,12 +9,12 @@
 <html>
   <body>
     <script type="module">
-      import { amen } from "https://deno-emit-proxy.deno.dev/x/yea@v0.4.0/mod.ts";
+      import { amen } from "https://deno-emit-proxy.deno.dev/x/yea@v0.5.0/mod.ts";
 
       document.querySelector("button").addEventListener("click", () =>
-        amen((index, cumulativeIndex) => {
+        amen(({ index, cumulativeIndex, numSlices }) => {
           const sliceIndex = Math.floor(
-            (Math.sin(cumulativeIndex / 0.485) * 0.5 + 0.5) * 16
+            (Math.sin(cumulativeIndex / 0.485) * 0.5 + 0.5) * numSlices
           );
           const duration = ((cumulativeIndex * sliceIndex) % 3) + 1;
 
