@@ -28,10 +28,10 @@ export const amen = (
         for (let x = 0; x < 3; x++) {
           let i = cumulativeIndex % n
           const si = typeof sequence === 'function'
-            ? stepIndex(i, sequence(i, cumulativeIndex))
+            ? stepIndex(i, sequence({ index: i, cumulativeIndex, numSlices }))
             : stepIndex(i, sequence[i]) % sequence.length
           const step = typeof sequence === 'function'
-            ? sequence(si, cumulativeIndex)
+            ? sequence({ index: si, cumulativeIndex, numSlices })
             : sequence[si]
           const stepDuration = sliceDuration *
             (step.duration ? value(step.duration, si) : 1.0)

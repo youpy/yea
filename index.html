@@ -20,9 +20,9 @@
       import { useState, useEffect } from "preact/hooks";
 
       const createFn = (value) => {
-        return (index, cumulativeIndex) => {
+        return ({ index, cumulativeIndex, numSlices }) => {
           const sliceIndex = Math.floor(
-            (Math.sin(cumulativeIndex / value) * 0.5 + 0.5) * 16
+            (Math.sin(cumulativeIndex / value) * 0.5 + 0.5) * numSlices
           );
           const duration = ((cumulativeIndex * sliceIndex) % 3) + 1;
 
