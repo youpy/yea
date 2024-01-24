@@ -29,10 +29,10 @@
           return {
             sliceIndex,
             duration,
-            length: 1 / duration,
+            length: 1 / duration / duration,
             loop: {
               prob: 1,
-              length: 1 / (((cumulativeIndex * index) % 4) + 1),
+              length: 1 / (((cumulativeIndex * index) % 2) + 1),
             },
           };
         };
@@ -78,7 +78,15 @@
             }
           };
           const onHashChange = () => {
-            setValue(getValueFromHash());
+            const newValue = getValueFromHash();
+
+            if (newValue) {
+              setValue(newValue);
+
+              if (setFn) {
+                setFn.fn(createFn(newValue / 1000));
+              }
+            }
           };
 
           window.addEventListener("keydown", onKeyDown);
