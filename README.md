@@ -35,4 +35,4 @@
 </html>
 ```
 
-[playground](https://codepen.io/youpy/pen/YzgEvNp?editors=1000)
+[playground](https://codepen.io/youpy/pen/YzgEvNp?editors=0010)
