@@ -34,3 +34,5 @@
   </body>
 </html>
 ```
+
+[playground](https://jsfiddle.net/xnvbtrkq/2/)
