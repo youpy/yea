@@ -10,8 +10,7 @@
   },
   "tasks": {
     "asset": "deno run -A https://deno.land/x/asset_builder/asset_builder.ts > asset.ts",
-    "build": "deno run -A bundle.ts",
-    "preview": "deno task build && deno run -A https://deno.land/std/http/file_server.ts dist"
+    "preview": "deno run --watch=index.html,mod.ts,amen.ts,sequence.ts,value.ts -A preview.ts"
   },
   "compilerOptions": {
     "lib": ["dom", "deno.ns"]

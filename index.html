@@ -56,8 +56,22 @@
         const [value, setValue] = useState(
           getValueFromHash() || Math.floor(Math.random() * 1000) + 1
         );
+        const [serveId, setServeId] = useState(null);
 
         useEffect(() => {
+          // for live reloading
+          const intervalId = setInterval(async () => {
+            const prevId = serveId;
+            const res = await fetch("/_serve");
+            const id = await res.text();
+
+            if (prevId && id !== prevId) {
+              location.reload();
+            } else {
+              setServeId(id);
+            }
+          }, 1000);
+
           const onKeyDown = (e) => {
             let newValue = value;
 
@@ -93,6 +107,7 @@
           window.addEventListener("hashchange", onHashChange);
 
           return () => {
+            clearInterval(intervalId);
             window.removeEventListener("keydown", onKeyDown);
             window.removeEventListener("hashchange", onHashChange);
           };
