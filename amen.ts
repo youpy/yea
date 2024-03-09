@@ -74,10 +74,10 @@ export const amen = (
             )
 
             source.onended = () => {
-              history.shift()
+              const item = history.shift()
 
-              if (typeof history[0] !== 'undefined') {
-                onPosition(history[0])
+              if (typeof item !== 'undefined') {
+                onPosition(item)
               }
             }
           }
@@ -111,10 +111,10 @@ export const amen = (
             )
 
             source.onended = () => {
-              history.shift()
+              const item = history.shift()
 
-              if (typeof history[0] !== 'undefined') {
-                onPosition(history[0])
+              if (typeof item !== 'undefined') {
+                onPosition(item)
               }
             }
           }
