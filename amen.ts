@@ -6,10 +6,12 @@ import asset from './asset.ts'
 export const amen = (
   sequence: Sequence,
   numSlices = 16,
+  onPosition: (position: [number, number, boolean]) => void = () => {},
 ): [() => void, (newSequence: Sequence) => void] => {
   const content = new Uint8Array(asset.files.amen.content)
   const ac = new AudioContext()
   const gain = ac.createGain()
+  const history: [number, number, boolean][] = []
 
   let currentTime = ac.currentTime
   let timeoutId: number
@@ -52,6 +54,16 @@ export const amen = (
           }
 
           if (stepLength > 0) {
+            history.push([
+              offset / audioBuffer.duration,
+              stepLength / audioBuffer.duration,
+              false,
+            ])
+
+            if (cumulativeIndex === 0) {
+              onPosition(history[0])
+            }
+
             source.buffer = audioBuffer
             source.loop = true
             source.connect(gain)
@@ -60,6 +72,14 @@ export const amen = (
               offset,
               stepLength,
             )
+
+            source.onended = () => {
+              history.shift()
+
+              if (typeof history[0] !== 'undefined') {
+                onPosition(history[0])
+              }
+            }
           }
 
           // loop
@@ -72,6 +92,13 @@ export const amen = (
             const loopStart = (offset + stepLength) % audioBuffer.duration
             const loopEnd = loopStart + stepLoopLength
 
+            history.push([
+              loopStart / audioBuffer.duration,
+              Math.min(loopEnd - loopStart, stepDuration - stepLength) /
+              audioBuffer.duration,
+              true,
+            ])
+
             source.buffer = audioBuffer
             source.loop = true
             source.loopStart = loopStart
@@ -82,6 +109,14 @@ export const amen = (
               loopStart,
               stepDuration - stepLength,
             )
+
+            source.onended = () => {
+              history.shift()
+
+              if (typeof history[0] !== 'undefined') {
+                onPosition(history[0])
+              }
+            }
           }
 
           duration += stepDuration
