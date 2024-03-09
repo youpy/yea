@@ -34,3 +34,8 @@
   </body>
 </html>
 ```
+
+# credits
+
+- The audio files used in this software are from
+  https://rhythm-lab.com/amen_breaks/
