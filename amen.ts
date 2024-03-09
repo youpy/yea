@@ -92,12 +92,17 @@ export const amen = (
             const loopStart = (offset + stepLength) % audioBuffer.duration
             const loopEnd = loopStart + stepLoopLength
 
-            history.push([
-              loopStart / audioBuffer.duration,
-              Math.min(loopEnd - loopStart, stepDuration - stepLength) /
-              audioBuffer.duration,
-              true,
-            ])
+            const durationOnHistory = Math.min(
+              loopEnd - loopStart,
+              stepDuration - stepLength,
+            )
+            if (durationOnHistory > 0) {
+              history.push([
+                loopStart / audioBuffer.duration,
+                durationOnHistory / audioBuffer.duration,
+                true,
+              ])
+            }
 
             source.buffer = audioBuffer
             source.loop = true
