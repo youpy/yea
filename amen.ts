@@ -20,8 +20,6 @@ export const amen = (
     const sliceDuration = audioBuffer.duration / numSlices
     const schedule = () => {
       if (currentTime <= ac.currentTime + 0.2) {
-        console.log(ac.currentTime)
-
         let duration = 0
         const n = typeof sequence === 'function' ? numSlices : sequence.length
 
