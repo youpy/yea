@@ -18,7 +18,7 @@ interface Step {
   duration?: Value // 0.0 - 1.0
   start?: Value // 0.0 - 1.0
   loop?: {
-    prob: Value // 0.0 - 1.0
+    prob?: Value // 0.0 - 1.0
     length?: Value // 0.0 - 1.0
   }
   swap?: {

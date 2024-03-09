@@ -85,7 +85,7 @@ export const amen = (
           // loop
           if (
             step.loop && stepLength < 1.0 && step.loop.length &&
-            Math.random() < value(step.loop.prob, si)
+            Math.random() < value(step.loop?.prob || 1.0, si)
           ) {
             const stepLoopLength = stepDuration * value(step.loop.length, si)
             const source = ac.createBufferSource()
