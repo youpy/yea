@@ -40,7 +40,7 @@ export const amen = (
             (step.length ? value(step.length, si) : 1.0)
           const stepSliceIndex = value(step.sliceIndex, si)
           const stepStart = stepDuration *
-            (step.start ? value(step.start, si) : 1.0)
+            (step.start ? value(step.start, si) : 0)
           const stepWhen = currentTime + duration
           const offset = ((sliceDuration * stepSliceIndex) + stepStart) %
             audioBuffer.duration
