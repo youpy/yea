@@ -1,7 +1,7 @@
 # yea
 
-- https://yea-ddl.pages.dev
 - https://deno.land/x/yea
+- [playground](https://codepen.io/youpy/pen/YzgEvNp?editors=0010)
 
 ## usage
 
@@ -34,5 +34,3 @@
   </body>
 </html>
 ```
-
-[playground](https://codepen.io/youpy/pen/YzgEvNp?editors=0010)
