@@ -20,6 +20,14 @@ export const amen = (
   gain.connect(ac.destination)
   ac.decodeAudioData(content.buffer, (audioBuffer) => {
     const sliceDuration = audioBuffer.duration / numSlices
+    const onended = () => {
+      const item = history.shift()
+
+      if (typeof item !== 'undefined') {
+        onPosition(item)
+      }
+    }
+
     const schedule = () => {
       if (currentTime <= ac.currentTime + 0.2) {
         let duration = 0
@@ -44,6 +52,8 @@ export const amen = (
           const stepWhen = currentTime + duration
           const offset = ((sliceDuration * stepSliceIndex) + stepStart) %
             audioBuffer.duration
+          const doLoop = step.loop && stepLength < 1.0 && step.loop.length &&
+            Math.random() < value(step.loop?.prob || 1.0, si)
 
           if (step.hop) {
             if (Math.random() < value(step.hop.prob, si)) {
@@ -61,7 +71,7 @@ export const amen = (
             ])
 
             if (cumulativeIndex === 0) {
-              onPosition(history[0])
+              onended()
             }
 
             source.buffer = audioBuffer
@@ -73,19 +83,26 @@ export const amen = (
               stepLength,
             )
 
-            source.onended = () => {
-              const item = history.shift()
+            if (stepDuration > stepLength && !doLoop) {
+              // insert silence (do not connect to gain) to proceed
+              const source = ac.createBufferSource()
 
-              if (typeof item !== 'undefined') {
-                onPosition(item)
-              }
+              source.buffer = audioBuffer
+              source.loop = true
+              source.start(
+                stepWhen + stepLength,
+                offset + stepLength,
+                stepDuration - stepLength,
+              )
+              source.onended = onended
+            } else {
+              source.onended = onended
             }
           }
 
           // loop
           if (
-            step.loop && stepLength < 1.0 && step.loop.length &&
-            Math.random() < value(step.loop?.prob || 1.0, si)
+            doLoop && step.loop?.length
           ) {
             const stepLoopLength = stepDuration * value(step.loop.length, si)
             const source = ac.createBufferSource()
@@ -96,13 +113,11 @@ export const amen = (
               loopEnd - loopStart,
               stepDuration - stepLength,
             )
-            if (durationOnHistory > 0) {
-              history.push([
-                loopStart / audioBuffer.duration,
-                durationOnHistory / audioBuffer.duration,
-                true,
-              ])
-            }
+            history.push([
+              loopStart / audioBuffer.duration,
+              durationOnHistory / audioBuffer.duration,
+              true,
+            ])
 
             source.buffer = audioBuffer
             source.loop = true
@@ -115,13 +130,7 @@ export const amen = (
               stepDuration - stepLength,
             )
 
-            source.onended = () => {
-              const item = history.shift()
-
-              if (typeof item !== 'undefined') {
-                onPosition(item)
-              }
-            }
+            source.onended = onended
           }
 
           duration += stepDuration
