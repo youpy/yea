@@ -9,7 +9,7 @@
 <html>
   <body>
     <script type="module">
-      import { amen } from "https://deno-emit-proxy.deno.dev/x/yea@v0.5.0/mod.ts";
+      import { amen } from "https://deno-emit-proxy.deno.dev/x/yea@v0.8.0/mod.ts";
 
       document.querySelector("button").addEventListener("click", () =>
         amen(({ index, cumulativeIndex, numSlices }) => {
