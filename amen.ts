@@ -6,14 +6,15 @@ import asset from './asset.ts'
 export const amen = (
   sequence: Sequence,
   numSlices = 16,
+  ac: AudioContext = new AudioContext(),
+  startAt = -1,
   onPosition: (position: [number, number, boolean]) => void = () => {},
 ): [() => void, (newSequence: Sequence) => void] => {
   const content = new Uint8Array(asset.files.amen.content)
-  const ac = new AudioContext()
   const gain = ac.createGain()
   const history: [number, number, boolean][] = []
 
-  let currentTime = ac.currentTime
+  let currentTime = startAt !== -1 ? startAt : ac.currentTime
   let timeoutId: number
   let cumulativeIndex = 0
 
