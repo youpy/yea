@@ -35,7 +35,7 @@ const _amen = (
         const n = typeof sequence === 'function' ? numSlices : sequence.length
 
         for (let x = 0; x < 3; x++) {
-          let i = cumulativeIndex % n
+          const i = cumulativeIndex % n
           const si = typeof sequence === 'function'
             ? stepIndex(i, sequence({ index: i, cumulativeIndex, numSlices }))
             : stepIndex(i, sequence[i]) % sequence.length
@@ -56,19 +56,9 @@ const _amen = (
           const doLoop = step.loop && stepLength < 1.0 && step.loop.length &&
             Math.random() <
               value(
-                typeof step.loop?.prob === 'undefined'
-                  ? 1.0
-                  : step.loop?.prob,
+                typeof step.loop?.prob === 'undefined' ? 1.0 : step.loop?.prob,
                 si,
               )
-
-          if (step.hop) {
-            if (Math.random() < value(step.hop.prob, si)) {
-              i = value(step.hop.index, si)
-
-              continue
-            }
-          }
 
           if (stepLength > 0) {
             history.push([

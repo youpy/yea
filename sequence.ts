@@ -25,10 +25,6 @@ interface Step {
     index: Value
     prob: Value
   }
-  hop?: {
-    index: Value
-    prob: Value
-  }
 }
 
 export const stepIndex = (index: number, step: Step): number => {
