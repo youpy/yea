@@ -54,7 +54,13 @@ const _amen = (
           const offset = ((sliceDuration * stepSliceIndex) + stepStart) %
             audioBuffer.duration
           const doLoop = step.loop && stepLength < 1.0 && step.loop.length &&
-            Math.random() < value(step.loop?.prob || 1.0, si)
+            Math.random() <
+              value(
+                typeof step.loop?.prob === 'undefined'
+                  ? 1.0
+                  : step.loop?.prob,
+                si,
+              )
 
           if (step.hop) {
             if (Math.random() < value(step.hop.prob, si)) {
