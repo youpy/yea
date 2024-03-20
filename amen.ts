@@ -3,7 +3,7 @@ import { Sequence, stepIndex } from './sequence.ts'
 
 import asset from './asset.ts'
 
-export const amen = (
+const _amen = (
   sequence: Sequence,
   numSlices = 16,
   ac: AudioContext = new AudioContext(),
@@ -158,5 +158,37 @@ export const amen = (
     gain.disconnect()
   }, (newSequence: Sequence) => {
     sequence = newSequence
+  }]
+}
+
+export const amen = (
+  sequences: Sequence[],
+  numSlices = 16,
+  ac: AudioContext = new AudioContext(),
+  onPosition: (position: [number, number, number, boolean]) => void = () => {},
+): [() => void, (newSequence: Sequence) => void] => {
+  const startAt = ac.currentTime
+  const stopFns: (() => void)[] = []
+  const newSequenceFns: ((seq: Sequence) => void)[] = []
+
+  sequences.forEach((sequence, i) => {
+    const [stopFn, newSequenceFn] = _amen(
+      sequence,
+      numSlices,
+      ac,
+      startAt,
+      ([start, length, loop]) => {
+        onPosition([i, start, length, loop])
+      },
+    )
+
+    stopFns.push(stopFn)
+    newSequenceFns.push(newSequenceFn)
+  })
+
+  return [() => {
+    stopFns.forEach((fn) => fn())
+  }, (seq: Sequence) => {
+    newSequenceFns.forEach((fn) => fn(seq))
   }]
 }
